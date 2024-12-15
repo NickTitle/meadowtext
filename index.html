@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meadowtext</title>
+    <title>Meadow Text</title>
     <link href="https://fonts.googleapis.com/css2?family=Tangerine:wght@700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -52,8 +52,19 @@
     <script>
         // Parse query string for parameters
         const params = new URLSearchParams(window.location.search);
-        const text = params.get("text") || "Default Text";
+        const isBase64Encoded = params.get("isBase64Encoded") === "true";
+        let text = params.get("text") || "Default Text";
         const sizeFactor = parseFloat(params.get("size")) || 1.0; // Default size factor is 1.0
+
+        // Decode text if base64-encoded
+        if (isBase64Encoded) {
+            try {
+                text = atob(text); // Decode base64 text
+            } catch (error) {
+                console.error("Invalid base64 text:", error);
+                text = "Invalid Text"; // Fallback in case of decoding error
+            }
+        }
 
         // Set the overlay text and size
         const overlayText = document.getElementById("overlay-text");
@@ -65,14 +76,15 @@
             const video = document.getElementById("background-video");
             if (video) {
                 // Start video after a brief delay
-                video.playbackRate = 0.5; // Play video at half speed
+                video.playbackRate = 0.75; // Play video at half speed
                 video.muted = true; // Ensure video remains muted for autoplay
 
-                // Wait a moment to start video and make it fade in
+                // Start the video
+                video.play(); // Start the video
                 setTimeout(() => {
-                    video.play(); // Start the video
+                    
                     video.style.opacity = 1; // Fade in the video
-                }, 500); // Delay before starting video (1 second)
+                }, 1000); // Delay before starting video (1 second)
             } else {
                 console.error("Video element not found");
             }
