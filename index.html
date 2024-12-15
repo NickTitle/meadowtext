@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video with Overlay</title>
-    <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Tangerine:wght@700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -16,7 +15,7 @@
             height: 100vh;
             background-color: black;
             color: white;
-            font-family: 'Tangerine', cursive;
+            font-family: 'Tangerine', Arial, sans-serif;
         }
         .video-container {
             position: relative;
@@ -27,14 +26,16 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            opacity: 0; /* Start with video hidden */
+            transition: opacity 2s ease-in; /* Fade in effect */
+            muted: true; /* Ensure video is muted */
+            playsinline: true; /* Allow inline playback on iOS */
         }
         .overlay-text {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 4rem;
-            font-weight: 700;
             text-align: center;
             text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
         }
@@ -42,26 +43,36 @@
 </head>
 <body>
     <div class="video-container">
-        <video autoplay loop muted playsinline>
+        <video id="background-video" loop muted playsinline>
             <source src="meadowtext.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
         <div class="overlay-text" id="overlay-text"></div>
     </div>
     <script>
-        // Parse query string for "text" parameter
+        // Parse query string for parameters
         const params = new URLSearchParams(window.location.search);
         const text = params.get("text") || "Default Text";
+        const sizeFactor = parseFloat(params.get("size")) || 1.0; // Default size factor is 1.0
 
-        // Set the overlay text
-        document.getElementById("overlay-text").textContent = text;
+        // Set the overlay text and size
+        const overlayText = document.getElementById("overlay-text");
+        overlayText.textContent = text;
+        overlayText.style.fontSize = `${2.5 * sizeFactor}rem`; // Base size is 2.5rem, scaled by sizeFactor
 
-        // Set video playback speed
+        // Set video playback speed and fade-in effect
         window.onload = () => {
-            const video = document.querySelector("video");
+            const video = document.getElementById("background-video");
             if (video) {
+                // Start video after a brief delay
                 video.playbackRate = 0.5; // Play video at half speed
                 video.muted = true; // Ensure video remains muted for autoplay
+
+                // Wait a moment to start video and make it fade in
+                setTimeout(() => {
+                    video.play(); // Start the video
+                    video.style.opacity = 1; // Fade in the video
+                }, 500); // Delay before starting video (1 second)
             } else {
                 console.error("Video element not found");
             }
