@@ -21,13 +21,13 @@
             position: relative;
             width: 100%;
             height: 100%;
+            opacity: 0; /* Start with container hidden */
+            transition: opacity 2s ease-in; /* Fade in effect */
         }
         video {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 0; /* Start with video hidden */
-            transition: opacity 2s ease-in; /* Fade in effect */
             muted: true; /* Ensure video is muted */
             playsinline: true; /* Allow inline playback on iOS */
         }
@@ -42,7 +42,7 @@
     </style>
 </head>
 <body>
-    <div class="video-container">
+    <div class="video-container" id="video-container">
         <video id="background-video" loop muted playsinline>
             <source src="meadowtext.mp4" type="video/mp4">
             Your browser does not support the video tag.
@@ -74,19 +74,20 @@
         // Set video playback speed and fade-in effect
         window.onload = () => {
             const video = document.getElementById("background-video");
-            if (video) {
+            const videoContainer = document.getElementById("video-container");
+            if (video && videoContainer) {
                 // Start video after a brief delay
-                video.playbackRate = 0.75; // Play video at half speed
+                video.playbackRate = 0.75; // Play video at slower speed
                 video.muted = true; // Ensure video remains muted for autoplay
 
                 // Start the video
                 video.play(); // Start the video
                 setTimeout(() => {
-                    
                     video.style.opacity = 1; // Fade in the video
+                    videoContainer.style.opacity = 1; // Fade in the container
                 }, 1000); // Delay before starting video (1 second)
             } else {
-                console.error("Video element not found");
+                console.error("Video element or container not found");
             }
         };
     </script>
